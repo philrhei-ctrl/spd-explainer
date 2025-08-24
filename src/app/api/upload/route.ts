@@ -17,6 +17,7 @@ export async function POST(req: Request) {
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
 
+  // Save in /tmp on Vercel, ./uploads locally
   const dir =
     process.env.NODE_ENV === "production" ? "/tmp" : path.join(process.cwd(), "uploads");
   await fs.mkdir(dir, { recursive: true });
@@ -25,6 +26,7 @@ export async function POST(req: Request) {
   const filePath = path.join(dir, fileName);
   await fs.writeFile(filePath, buffer);
 
+  // Parse PDF
   const pdfParse = (await import("pdf-parse")).default as any;
   const parsed = await pdfParse(buffer);
   const preview = (parsed.text || "").slice(0, 1200);
