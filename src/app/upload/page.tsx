@@ -39,7 +39,6 @@ export default function UploadPage() {
       {result && (
         <div style={{ marginTop: 24 }}>
           {result.error && <p style={{ color: "crimson" }}>{result.error}</p>}
-
           {result.ok && (
             <>
               <p><b>File:</b> {result.fileName}</p>

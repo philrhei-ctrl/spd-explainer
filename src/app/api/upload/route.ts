@@ -17,20 +17,17 @@ export async function POST(req: Request) {
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
 
-  // Save file (local -> ./uploads, prod -> /tmp)
-  const dir = process.env.NODE_ENV === "production"
-    ? "/tmp"
-    : path.join(process.cwd(), "uploads");
+  const dir =
+    process.env.NODE_ENV === "production" ? "/tmp" : path.join(process.cwd(), "uploads");
   await fs.mkdir(dir, { recursive: true });
 
   const fileName = sanitize(file.name);
   const filePath = path.join(dir, fileName);
   await fs.writeFile(filePath, buffer);
 
-  // Parse PDF
   const pdfParse = (await import("pdf-parse")).default as any;
   const parsed = await pdfParse(buffer);
-  const preview = (parsed.text || "").slice(0, 1200); // first ~1200 chars
+  const preview = (parsed.text || "").slice(0, 1200);
 
   return NextResponse.json({
     ok: true,
